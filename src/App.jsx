@@ -32,6 +32,14 @@ const ChatBar = props => {
 
 }
 
+const loading = () => {
+  return (
+    <div className="message-username">
+      Loading...
+    </div>
+  )
+}
+
 const generateRandomId = (alphabet => {
   const alphabetLength = alphabet.length;
   const randoIter = (key, n) => {
@@ -102,7 +110,9 @@ class App extends Component {
     return (
       //structure of all different components
       //navbar
-      <MessageList allMessages={this.state.allMessages}/>
+      <div>{this.state.loading ? loading() :
+        <MessageList allMessages={this.state.allMessages}/>}
+      </div>
       //footer
     )
   }
