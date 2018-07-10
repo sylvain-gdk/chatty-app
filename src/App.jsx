@@ -29,7 +29,12 @@ const MessageList = props => {
 }
 
 const ChatBar = props => {
-
+  return (
+    <footer className="chatbar">
+      <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={props.currentUser}/>
+      <input className="chatbar-message" placeholder="Type a message and hit ENTER" />
+    </footer>
+  )
 }
 
 const loading = () => {
@@ -59,6 +64,7 @@ class App extends Component {
     super();
     this.state = {
       loading: true,
+      currentUser: 'sylvain',
       allMessages: {
         messages: [
           {
@@ -100,20 +106,23 @@ class App extends Component {
   }
 
   componentDidMount() {
-    // After 3 seconds, set `loading` to false in the state.
     setTimeout(() => {
-      this.setState({loading: false}); // this triggers a re-render!
+      console.log("Simulating incoming message");
+      // Add a new message to the list of messages in the data store
+      const newMessage = {id: 3, username: "Michelle", content: "Hello there!", type: 'incomingMessage'};
+      const messages = this.state.allMessages.messages.concat(newMessage)
+      // Update the state of the app component.
+      // Calling setState will trigger a call to render() in App and all child components.
+      this.setState({allMessages: {messages: messages}})
     }, 3000)
   }
 
   render() {
     return (
-      //structure of all different components
-      //navbar
-      <div>{this.state.loading ? loading() :
-        <MessageList allMessages={this.state.allMessages}/>}
+      <div>
+        <MessageList allMessages = {this.state.allMessages}/>
+        <ChatBar currentUser = {this.state.currentUser}/>
       </div>
-      //footer
     )
   }
 }
