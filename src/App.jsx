@@ -29,10 +29,16 @@ const MessageList = props => {
 }
 
 const ChatBar = props => {
+  const onSubmit = event => {
+    if(event.key == 'Enter'){
+      let input = document.getElementById('chatbar');
+      props.addMessage(input.value);
+    }
+  };
   return (
     <footer className="chatbar">
       <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={props.currentUser}/>
-      <input className="chatbar-message" placeholder="Type a message and hit ENTER" />
+      <input id="chatbar" className="chatbar-message" placeholder="Type a message and hit ENTER" onKeyPress={onSubmit} />
     </footer>
   )
 }
@@ -107,9 +113,8 @@ class App extends Component {
 
   componentDidMount() {
     setTimeout(() => {
-      console.log("Simulating incoming message");
       // Add a new message to the list of messages in the data store
-      const newMessage = {id: 3, username: "Michelle", content: "Hello there!", type: 'incomingMessage'};
+      const newMessage = {id: generateRandomId(), username: "Michelle", content: "Hello there!", type: 'incomingMessage'};
       const messages = this.state.allMessages.messages.concat(newMessage)
       // Update the state of the app component.
       // Calling setState will trigger a call to render() in App and all child components.
@@ -117,11 +122,22 @@ class App extends Component {
     }, 3000)
   }
 
+  addMessage = content => {
+    const newMessage = {
+      id: generateRandomId(),
+      username: this.state.currentUser,
+      content: content,
+      type: 'incomingMessage'
+    };
+    const messages = this.state.allMessages.messages.concat(newMessage)
+    this.setState({allMessages: {messages: messages}})
+  }
+
   render() {
     return (
       <div>
         <MessageList allMessages = {this.state.allMessages}/>
-        <ChatBar currentUser = {this.state.currentUser}/>
+        <ChatBar currentUser = {this.state.currentUser} addMessage = {this.addMessage} />
       </div>
     )
   }
