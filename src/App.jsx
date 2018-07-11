@@ -1,57 +1,6 @@
 import React, {Component} from 'react';
-// import message from "./Message.jsx";
-
-// Sends a single message or notification to DOM
-const Message = props => {
-  if(props.type === 'incomingMessage'){
-    return (
-      <div className="message">
-        <span className="message-username">{props.username}</span>
-        <span className="message-content">{props.content}</span>;
-      </div>
-    )
-  }else{
-    return (
-      <div className="message system">
-        {props.content}
-      </div>
-    )
-  }
-}
-
-// Makes message and notification list
-// available for Message component
-const MessageList = props => {
-  // Destructuring messages
-  const {allMessages} = props;
-  const messageList = allMessages.messages.map(item => (
-    <Message key={generateRandomId()} content={item.content}
-      username={item.username} type={item.type}/>
-  ));
-  return <div>{messageList}</div>;
-}
-
-// Returns a new message from input to main app component
-const ChatBar = props => {
-  const onSubmit = event => {
-    // Listens for the Enter key
-    let user = document.getElementById('user');
-    let content = document.getElementById('content');
-    if(event.key == 'Enter' && content.value !== ''){
-      // if(user.value === ''){
-      //   user = 'Anonymous';
-      // }
-      props.addMessage(user.value, content.value);
-      content.value = '';
-    }
-  };
-  return (
-    <footer className="chatbar">
-      <input id="user" className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={props.currentUser}/>
-      <input id="content" className="chatbar-message" placeholder="Type a message and hit ENTER" onKeyPress={onSubmit} />
-    </footer>
-  )
-}
+import ChatBar from "./ChatBar.jsx";
+import MessageList from "./MessageList.jsx";
 
 // Generates a random id
 const generateRandomId = (alphabet => {
@@ -88,6 +37,7 @@ class App extends Component {
     super();
     this.state = {
       // anonymousCount: count,
+      anonymousCount: 1,
       currentUser: '',
       allMessages:
         {
@@ -108,16 +58,17 @@ class App extends Component {
   }
 
   // Adds a new message to an existing array
-  addMessage = (user, content) => {
-    let currentUser = user;
+  addMessage = (userInput, content) => {
+    let currentUser = userInput;
       console.log('from input: ', currentUser)
-    if(this.state.currentUser === '' && user === ''){
-      currentUser = findNextAnonymous('Anonymous', this.state.allMessages.messages);
+    if((this.state.currentUser === '' && userInput === '') ||
+        (this.state.currentUser.slice(0, -1) !=='Anonymous')){
+      currentUser = 'Anonymous' + this.state.anonymousCount;
+      this.setState({anonymousCount: this.state.anonymousCount += 1});
       console.log('no anonymous yet: ', currentUser)
-    }else if(this.state.currentUser !== '' && user === ''){
-      currentUser = findNextAnonymous(this.state.currentUser,
-                                      this.state.allMessages.messages);
-      console.log('anonymous exist: ', currentUser)
+    }else if(this.state.currentUser !== '' && userInput === ''){
+      currentUser = this.state.currentUser;
+      console.log('anonymous should exist: ', currentUser)
     }
     const newMessage = {
       id: generateRandomId(),
