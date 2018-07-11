@@ -35,16 +35,20 @@ const MessageList = props => {
 const ChatBar = props => {
   const onSubmit = event => {
     // Listens for the Enter key
-    if(event.key == 'Enter'){
-      let input = document.getElementById('chatbar');
-      props.addMessage(input.value);
+    let user = document.getElementById('user');
+    let content = document.getElementById('content');
+    if(event.key == 'Enter' && content.value !== ''){
+      // if(user.value === ''){
+      //   user = 'Anonymous';
+      // }
+      props.addMessage(user.value, content.value);
+      content.value = '';
     }
-    //TODO need to reset input when message is sent
   };
   return (
     <footer className="chatbar">
-      <input className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={props.currentUser}/>
-      <input id="chatbar" className="chatbar-message" placeholder="Type a message and hit ENTER" onKeyPress={onSubmit} />
+      <input id="user" className="chatbar-username" placeholder="Your Name (Optional)" defaultValue={props.currentUser}/>
+      <input id="content" className="chatbar-message" placeholder="Type a message and hit ENTER" onKeyPress={onSubmit} />
     </footer>
   )
 }
@@ -63,50 +67,32 @@ const generateRandomId = (alphabet => {
   return () => randoIter("", 10);
 })("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
+// Returns new Anonymous username
+const findNextAnonymous = (username, array) => {
+  console.log(array)
+  for(let user in array){
+    if(user.username === username){
+      return 'Yeah!!' //user.username + 1;
+    }
+    else{
+      return 'Anonymous'
+    }
+  }
+}
+
 // Main app component
 class App extends Component {
+  count = 1
+
   constructor(){
     super();
     this.state = {
-      loading: true,
-      currentUser: 'sylvain',
-      allMessages: {
-        messages: [
-          {
-            type: "incomingMessage",
-            content: "I won't be impressed with technology until I can download food.",
-            username: "Anonymous1"
-          },
-          {
-            type: "incomingNotification",
-            content: "Anonymous1 changed their name to nomnom",
-          },
-          {
-            type: "incomingMessage",
-            content: "I wouldn't want to download Kraft Dinner. I'd be scared of cheese packet loss.",
-            username: "Anonymous2"
-          },
-          {
-            type: "incomingMessage",
-            content: "...",
-            username: "nomnom"
-          },
-          {
-            type: "incomingMessage",
-            content: "I'd love to download a fried egg, but I'm afraid encryption would scramble it",
-            username: "Anonymous2"
-          },
-          {
-            type: "incomingMessage",
-            content: "This isn't funny. You're not funny",
-            username: "nomnom"
-          },
-          {
-            type: "incomingNotification",
-            content: "Anonymous2 changed their name to NotFunny",
-          }
-        ]
-      }
+      // anonymousCount: count,
+      currentUser: '',
+      allMessages:
+        {
+          messages: []
+        }
     };
   }
 
@@ -122,20 +108,36 @@ class App extends Component {
   }
 
   // Adds a new message to an existing array
-  addMessage = content => {
+  addMessage = (user, content) => {
+    let currentUser = user;
+      console.log('from input: ', currentUser)
+    if(this.state.currentUser === '' && user === ''){
+      currentUser = findNextAnonymous('Anonymous', this.state.allMessages.messages);
+      console.log('no anonymous yet: ', currentUser)
+    }else if(this.state.currentUser !== '' && user === ''){
+      currentUser = findNextAnonymous(this.state.currentUser,
+                                      this.state.allMessages.messages);
+      console.log('anonymous exist: ', currentUser)
+    }
     const newMessage = {
       id: generateRandomId(),
-      username: this.state.currentUser,
+      username: currentUser,
       content: content,
       type: 'incomingMessage'
     };
     const messages = this.state.allMessages.messages.concat(newMessage)
-    this.setState({allMessages: {messages: messages}})
+    this.setState({
+      currentUser: currentUser,
+      allMessages: {messages: messages}
+    })
   }
+
   // Renders a list of messages from an array,
   // sets the currentUser in navbar and
   // adds new messages from navbar input
   render() {
+    console.log('all messages: ', this.state.allMessages)
+    console.log('user in state: ', this.state.currentUser)
     return (
       <div>
         <MessageList allMessages = {this.state.allMessages}/>
