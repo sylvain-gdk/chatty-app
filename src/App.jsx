@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 // import message from "./Message.jsx";
 
+// Sends a single message or notification to DOM
 const Message = props => {
   if(props.type === 'incomingMessage'){
     return (
@@ -18,6 +19,8 @@ const Message = props => {
   }
 }
 
+// Makes message and notification list
+// available for Message component
 const MessageList = props => {
   // Destructuring messages
   const {allMessages} = props;
@@ -28,8 +31,10 @@ const MessageList = props => {
   return <div>{messageList}</div>;
 }
 
+// Returns a new message from input to main app component
 const ChatBar = props => {
   const onSubmit = event => {
+    // Listens for the Enter key
     if(event.key == 'Enter'){
       let input = document.getElementById('chatbar');
       props.addMessage(input.value);
@@ -43,14 +48,7 @@ const ChatBar = props => {
   )
 }
 
-const loading = () => {
-  return (
-    <div className="message-username">
-      Loading...
-    </div>
-  )
-}
-
+// Generates a random id
 const generateRandomId = (alphabet => {
   const alphabetLength = alphabet.length;
   const randoIter = (key, n) => {
@@ -64,7 +62,7 @@ const generateRandomId = (alphabet => {
   return () => randoIter("", 10);
 })("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
-
+// Main app component
 class App extends Component {
   constructor(){
     super();
@@ -122,6 +120,7 @@ class App extends Component {
     }, 3000)
   }
 
+  // Adds a new message to an existing array
   addMessage = content => {
     const newMessage = {
       id: generateRandomId(),
@@ -132,7 +131,9 @@ class App extends Component {
     const messages = this.state.allMessages.messages.concat(newMessage)
     this.setState({allMessages: {messages: messages}})
   }
-
+  // Renders a list of messages from an array,
+  // sets the currentUser in navbar and
+  // adds new messages from navbar input
   render() {
     return (
       <div>
@@ -142,4 +143,5 @@ class App extends Component {
     )
   }
 }
+
 export default App;
