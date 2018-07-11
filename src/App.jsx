@@ -39,6 +39,7 @@ const ChatBar = props => {
       let input = document.getElementById('chatbar');
       props.addMessage(input.value);
     }
+    //TODO need to reset input when message is sent
   };
   return (
     <footer className="chatbar">
