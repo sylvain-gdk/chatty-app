@@ -21,19 +21,23 @@ class App extends Component {
     this.socket.addEventListener("open", e => {
       console.log("Connected to websocket server");
     });
-    // Updates messages
+    // Updates messages from the server
     this.socket.onmessage = event => {
       const message = JSON.parse(event.data);
+      if(message.type === 'incomingMessage'){
+        this.setState({
+          currentUser: this.validateCurrentUser(message.username)
+        })
+      }
       const messages = this.state.allMessages.messages.concat(message)
       this.setState({
-        currentUser: message.username,
         allMessages: {messages: messages}
       })
     }
   };
 
-  // Adds a new message to an existing array
-  addMessage = (userInput, content) => {
+  // CurrentUser validation
+  validateCurrentUser(userInput){
     let currentUser = userInput;
     if((this.state.currentUser === '' && userInput === '') ||
         (this.state.currentUser.slice(0, -1) !=='Anonymous')){
@@ -42,19 +46,34 @@ class App extends Component {
     }else if(this.state.currentUser !== '' && userInput === ''){
       currentUser = this.state.currentUser;
     }
-    if(this.state.currentUser !== currentUser){
-      const newNotification = {
-        content: `${this.state.currentUser} changed their name to ${currentUser}`,
-        type: 'incomingNotification'
-      };
-      const messages = this.state.allMessages.messages.concat(newNotification);
-    }
-    const newMessage = {
-      username: currentUser,
+    this.setState({currentUser: currentUser})
+    console.log('after user validate: ',currentUser)
+    return currentUser;
+  }
+
+  // Sends a message of type notification
+  sendNotification(userInput){
+    const message = {
+      content: `${this.state.currentUser} changed their name to ${userInput}`,
+      type: 'incomingNotification'
+    };
+    return message;
+  }
+
+  // Adds a new message to an existing array
+  addMessage = (userInput, content) => {
+    const message = {
+      username: this.validateCurrentUser(userInput),
       content: content,
       type: 'incomingMessage'
     };
-    this.socket.send(JSON.stringify(newMessage));
+    // If username changed, send notification
+    if(this.state.currentUser !== message.username &&
+        this.state.currentUser !== ''){
+      this.socket.send(JSON.stringify(
+        this.sendNotification(userInput)));
+    }
+    this.socket.send(JSON.stringify(message));
   }
 
   // Renders a list of messages from an array,
