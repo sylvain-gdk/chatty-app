@@ -50,15 +50,16 @@ class App extends Component {
     }
   };
 
-  // Sends a message of type notification
-  setNotification(oldUser){
+  // Sets a message of type notification
+  setNotification(oldUser, userInput){
     const message = {
-      content: `${oldUser} changed their name to ${this.state.currentUser}`,
+      content: `${oldUser} changed their name to ${userInput}`,
       type: 'postNotification'
     };
     return message;
   }
 
+  // Sets messages of type message
   setMessage(userInput, content){
     const message = {
       username: userInput,
@@ -69,21 +70,27 @@ class App extends Component {
     return message;
   }
 
-  // Adds a new message to an existing array
+  // Adds a new message to the messages array
   addMessage = (userInput, content) => {
     const oldUser = this.state.currentUser;
+    let newUser = oldUser;
+    // Sets currentUser to the new user
     if(userInput !== '' && oldUser !== userInput){
       this.setState({currentUser: userInput});
-      this.socket.send(JSON.stringify(this.setNotification(oldUser)));
+      this.socket.send(JSON.stringify(this.setNotification(oldUser, userInput)));
+      newUser = userInput;
+    // Sets Anonymous as new user
     }else if(userInput === '' && this.state.currentUser.slice(0,-1) !== 'Anonymous'){
+      newUser = 'Anonymous' + this.state.anonymousCount;
       this.setState({
         anonymousCount: this.state.anonymousCount + 1,
-        currentUser: 'Anonymous' + this.state.anonymousCount
+        currentUser: newUser
       });
+    // Keeps currentUser
     }else{
       this.setState({currentUser: oldUser});
     }
-    const message = this.setMessage(this.state.currentUser, content);
+    const message = this.setMessage(newUser, content);
     this.socket.send(JSON.stringify(message));
   }
 

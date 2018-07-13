@@ -30,6 +30,7 @@ socketServer.broadcast = (data, ws) => {
   });
 };
 
+// For username colors
 let counter = 0;
 
 // Set up a callback that will run when a client connects to the server
@@ -38,13 +39,12 @@ let counter = 0;
 socketServer.on('connection', (ws) => {
   console.log('Client connected: ', );
 
-  console.log(counter)
-
   const color = ['blue', 'red', 'green', 'black'];
 
   ws.on("message", data => {
     const message = JSON.parse(data);
     message.id = uuidv1();
+    // Changes the type of messages to incoming
     switch(message.type){
       case 'postMessage':
         message.type = 'incomingMessage';
