@@ -28,28 +28,12 @@ class App extends Component {
         case 'incomingNotification':
           this.setState({messages: [...this.state.messages, message]});
           break;
+        case 'welcome':
+          this.setState({messages: [...this.state.messages, message]});
+          break;
       }
     }
   };
-
-  // // CurrentUser validation
-  // setCurrentUser(userInput){
-  //   let username;
-  //   if(userInput === this.state.currentUser){
-  //     username = this.state.currentUser;
-  //   //else if(!userInput && userInput !== this.state.currentUser){
-  //   //   username = 'Anonymous' + this.state.anonymousCount;
-  //   //   this.setState({anonymousCount: this.state.anonymousCount += 1});
-  //   // }else if(userInput === this.state.currentUser){
-  //   //   username = this.state.currentUser;
-  //   }else{
-  //     username = 'oups! problem in lala land.'
-  //   }
-  //   this.setState({currentUser: username})
-
-  //   return username;
-  //   // !userInput && this.state.currentUser.slice(0, -1) !=='Anonymous'
-  // }
 
   // Sends a message of type notification
   setNotification(oldUser){
@@ -93,7 +77,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <ChatBar currentUser = {this.state.currentUser} addMessage = {this.addMessage} />
+        <ChatBar addMessage = {this.addMessage} />
         <MessageList messages = {this.state.messages}/>
       </div>
     )

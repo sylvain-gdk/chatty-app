@@ -14,6 +14,8 @@ const server = express()
 // Create the WebSockets server
 const socketServer = new WebSocket({ server });
 
+
+
 // Broadcasting to all connected clients
 socketServer.broadcast = (data, ws) => {
   socketServer.clients.forEach(client => {
@@ -34,16 +36,22 @@ socketServer.on('connection', (ws) => {
     message.id = uuidv1();
     switch(message.type){
       case 'postMessage':
-        console.log('server message: ', message)
         message.type = 'incomingMessage';
         break;
       case 'postNotification':
-        console.log('server notif: ', message)
         message.type = 'incomingNotification';
         break;
     }
     socketServer.broadcast(JSON.stringify(message));
   });
+
+  const message = {
+    id: uuidv1(),
+    content: `Welcome to Chatty! There is presently ${socketServer.clients.size} user(s) online.`,
+    type: 'welcome'
+  }
+  ws.send(JSON.stringify(message));
+
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
   ws.on('close', () => console.log('Client disconnected'));
