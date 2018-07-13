@@ -1,6 +1,6 @@
 const express = require('express');
 const WebSocket = require('ws').Server;
-const uuidv1 = require('uuid/v1');
+const uuidv4 = require('uuid/v4');
 
 // Set the port to 3001
 const PORT = 3001;
@@ -43,7 +43,7 @@ socketServer.on('connection', (ws) => {
 
   ws.on("message", data => {
     const message = JSON.parse(data);
-    message.id = uuidv1();
+    message.id = uuidv4();
     // Changes the type of messages to incoming
     switch(message.type){
       case 'postMessage':
@@ -58,7 +58,7 @@ socketServer.on('connection', (ws) => {
 
   // Username color style
   const style = {
-    id: uuidv1(),
+    id: uuidv4(),
     type: 'style',
     style: {
       color: color[counter]
@@ -68,7 +68,7 @@ socketServer.on('connection', (ws) => {
 
   // Welcome message when connecting to server
   const welcomeMessage = {
-    id: uuidv1(),
+    id: uuidv4(),
     content: `Welcome to Chatty!`,
     type: 'welcome'
   }
@@ -76,7 +76,7 @@ socketServer.on('connection', (ws) => {
 
   // Counter for the amount of connections
   const message = {
-    id: uuidv1(),
+    id: uuidv4(),
     type: 'count-users',
     counter: `${socketServer.clients.size} user(s) online`
   }
