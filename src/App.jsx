@@ -63,7 +63,8 @@ class App extends Component {
     const message = {
       username: userInput,
       content: content,
-      type: 'postMessage'
+      type: 'postMessage',
+      style: {color: this.state.style.color}
     };
     return message;
   }
@@ -94,7 +95,7 @@ class App extends Component {
       <div>
         <NavBar counter = {this.state.counter}/>
         <ChatBar addMessage = {this.addMessage} />
-        <MessageList style = {this.state.style} messages = {this.state.messages}/>
+        <MessageList messages = {this.state.messages}/>
       </div>
     )
   }

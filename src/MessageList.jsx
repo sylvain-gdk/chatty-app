@@ -8,7 +8,7 @@ const MessageList = props => {
   const {messages} = props;
   const messageList = messages.map(item => (
     <Message key={item.id} content={item.content}
-      username={item.username} type={item.type} style={props.style}/>
+      username={item.username} type={item.type} style={item.style}/>
   ));
   return <div>{messageList}</div>;
 }

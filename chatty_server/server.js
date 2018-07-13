@@ -21,7 +21,11 @@ socketServer.broadcast = (data, ws) => {
   socketServer.clients.forEach(client => {
     if (client && client.readyState === client.OPEN) {
       client.send(data);
-      counter += 1;
+      if(counter >= 3){
+        counter = 0;
+      }else{
+        counter += 1;
+      }
     }
   });
 };
@@ -34,14 +38,9 @@ let counter = 0;
 socketServer.on('connection', (ws) => {
   console.log('Client connected: ', );
 
-  const color = ['blue', 'red', 'green', 'black'];
+  console.log(counter)
 
-  let count = () => {
-    if(counter > 4){
-      counter = 0;
-    }
-    return counter;
-  }
+  const color = ['blue', 'red', 'green', 'black'];
 
   ws.on("message", data => {
     const message = JSON.parse(data);
@@ -62,7 +61,7 @@ socketServer.on('connection', (ws) => {
     id: uuidv1(),
     type: 'style',
     style: {
-      color: color[count()]
+      color: color[counter]
     }
   }
   ws.send(JSON.stringify(style));
@@ -87,6 +86,7 @@ socketServer.on('connection', (ws) => {
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
   ws.on('close', () => {
     console.log('Client disconnected');
+    message.counter = `${socketServer.clients.size} user(s) online`
     socketServer.broadcast(JSON.stringify(message));
   });
 });
