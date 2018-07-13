@@ -6,10 +6,7 @@ const ChatBar = props => {
     // Listens for the Enter key
     let user = document.getElementById('user');
     let content = document.getElementById('content');
-    if(event.key == 'Enter' && content.value !== ''){
-      // if(user.value === ''){
-      //   user = 'Anonymous';
-      // }
+    if(event.key == 'Enter' && content.value){
       props.addMessage(user.value, content.value);
       content.value = '';
     }
