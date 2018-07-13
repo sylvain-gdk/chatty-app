@@ -1,6 +1,8 @@
 import React, {Component} from 'react';
 import ChatBar from "./ChatBar.jsx";
+import Message from "./Message.jsx";
 import MessageList from "./MessageList.jsx";
+import NavBar from "./NavBar.jsx";
 
 // Main app component
 class App extends Component {
@@ -9,6 +11,7 @@ class App extends Component {
     this.state = {
       anonymousCount: 2,
       currentUser: 'Anonymous1',
+      style: {},
       messages: []
     };
   }
@@ -29,7 +32,19 @@ class App extends Component {
           this.setState({messages: [...this.state.messages, message]});
           break;
         case 'welcome':
-          this.setState({messages: [...this.state.messages, message]});
+          this.setState({
+            messages: [...this.state.messages, message]
+          });
+          break;
+        case 'count-users':
+          this.setState({
+            counter: message.counter
+          });
+          break;
+        case 'style':
+          this.setState({
+            style: {color: message.style.color}
+          });
           break;
       }
     }
@@ -77,8 +92,9 @@ class App extends Component {
   render() {
     return (
       <div>
+        <NavBar counter = {this.state.counter}/>
         <ChatBar addMessage = {this.addMessage} />
-        <MessageList messages = {this.state.messages}/>
+        <MessageList style = {this.state.style} messages = {this.state.messages}/>
       </div>
     )
   }

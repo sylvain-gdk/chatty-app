@@ -21,15 +21,27 @@ socketServer.broadcast = (data, ws) => {
   socketServer.clients.forEach(client => {
     if (client && client.readyState === client.OPEN) {
       client.send(data);
+      counter += 1;
     }
   });
 };
+
+let counter = 0;
 
 // Set up a callback that will run when a client connects to the server
 // When a client connects they are assigned a socket, represented by
 // the ws parameter in the callback.
 socketServer.on('connection', (ws) => {
   console.log('Client connected: ', );
+
+  const color = ['blue', 'red', 'green', 'black'];
+
+  let count = () => {
+    if(counter > 4){
+      counter = 0;
+    }
+    return counter;
+  }
 
   ws.on("message", data => {
     const message = JSON.parse(data);
@@ -45,14 +57,36 @@ socketServer.on('connection', (ws) => {
     socketServer.broadcast(JSON.stringify(message));
   });
 
-  const message = {
+  // Username color style
+  const style = {
     id: uuidv1(),
-    content: `Welcome to Chatty! There is presently ${socketServer.clients.size} user(s) online.`,
+    type: 'style',
+    style: {
+      color: color[count()]
+    }
+  }
+  ws.send(JSON.stringify(style));
+
+  // Welcome message when connecting to server
+  const welcomeMessage = {
+    id: uuidv1(),
+    content: `Welcome to Chatty!`,
     type: 'welcome'
   }
-  ws.send(JSON.stringify(message));
+  ws.send(JSON.stringify(welcomeMessage));
+
+  // Counter for the amount of connections
+  const message = {
+    id: uuidv1(),
+    type: 'count-users',
+    counter: `${socketServer.clients.size} user(s) online`
+  }
+  socketServer.broadcast(JSON.stringify(message));
 
 
   // Set up a callback for when a client closes the socket. This usually means they closed their browser.
-  ws.on('close', () => console.log('Client disconnected'));
+  ws.on('close', () => {
+    console.log('Client disconnected');
+    socketServer.broadcast(JSON.stringify(message));
+  });
 });
