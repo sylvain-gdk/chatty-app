@@ -1,45 +1,33 @@
-React Boilerplate
-=====================
+# Chatty Project
 
-A minimal and light dev environment for ReactJS.
+## About the project
 
-### Usage
+A simple full-stack chat application running on WebSockets to allow multiple different user connections.
+Each user gets a color assigned. If a user changes his name, the server will notify all other users. It also keeps count of active connections.
+The project was build with nodeJS, Express, Websockets, React, Javascript, HTML, CSS, WebPack and Babel.
 
-Clone the boilerplate and create your own git repo.
+## Screenshots
 
-```
-git clone git@github.com:lighthouse-labs/react-simple-boilerplate.git
-cd react-simple-boilerplate
-git remote rm origin
-git remote add origin [YOUR NEW REPOSITORY]
-# Manually update your package.json file
-```
+#### 3 users connecting
+!["starting.png"](https://github.com/sylvain-gdk/chatty-app/blob/master/docs/starting.png)
 
-Install the dependencies and start the server.
+#### Changing name
+!["name-change.png"](https://github.com/sylvain-gdk/chatty-app/blob/master/docs/name-change.png)
 
-```
-npm install
-npm start
-open http://localhost:3000
-```
+## Dependencies
 
-### Static Files
+- Express
+- WebSockets
+- React
+- ReactDOM
 
-You can store static files like images, fonts, etc in the `build` folder.
+## Getting Started
 
-For example, if you copy a file called my_image.png into the build folder you can access it using `http://localhost:3000/build/my_image.png`.
+#### Chatty server
+- Install all dependencies in chatty_server folder(using npm install command).
+- Run the development web server (using npm start command).
 
-### Linting
-
-This boilerplate project includes React ESLint configuration.
-
-```
-npm run lint
-```
-
-### Dependencies
-
-* React
-* Webpack
-* [babel-loader](https://github.com/babel/babel-loader)
-* [webpack-dev-server](https://github.com/webpack/webpack-dev-server)
+#### Chatty app
+- Install all dependencies in chatty-app folder(using npm install command).
+- Run the webpack compiler (using npm start command).
+- Access the app in a browser at localhost:3000
